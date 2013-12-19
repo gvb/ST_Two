@@ -1,5 +1,3 @@
-
-
 //  *****************************************************************************************************************
 //  *                                                                                                               *
 //  *                                         SpikenzieLabs.com                                                     *
@@ -8,31 +6,31 @@
 //  *                                                                                                               *
 //  *****************************************************************************************************************
 //
-// BY: MARK DEMERS 
+// BY: MARK DEMERS
 // May 2012
 // VERSION 1.1
 //
 // Brief:
 // Sketch used in the Solder: Time II Watch Kit, more info and build instructions at http://www.spikenzielabs.com/st2
-// 
+//
 //
 // LEGAL:
-// This code is provided as is. No guaranties or warranties are given in any form. It is your responsibilty to 
+// This code is provided as is. No guaranties or warranties are given in any form. It is your responsibilty to
 // determine this codes suitability for your application.
-// 
+//
 // Changes:
 // July 23 2012
-// Reduced fliker in some lighting conditions.
+// Reduced flicker in some lighting conditions.
 // 1. Moved Time and Date request during time and date display to top of Display Time routine.
 // 2. Reduced frequency that the Time and Date is requested from the RTC (once every 2000 loops).
-// 
+//
 // Improved brightness consistancy on all columns.
 // 1. Added delay to "on time" of all the pixels in the first 16 columns that are driven by the Demultiplexer.
 // 2. Adjusted delays to for Scrolling Text and Worm animation to balance slower overall refresh from added brightness delay.
 //
 // Fixed bug introduced by Arduino 1.0.1
 // 1. Added conditional compile in Setup for the button pins. Arduino > 1.0 uses INPUT_PULLUP vs Digitalwrite HIGH.
-// 
+//
 //
 
 #include <Wire.h>
@@ -133,7 +131,6 @@ uint8_t YearsTens = 1;
 uint8_t DayCode =1;
 uint8_t MonthCode =1;
 
-
 boolean TH_Not24_flag = true;
 boolean PM_NotAM_flag = false;
 boolean NewTimeFormate = TH_Not24_flag;
@@ -153,10 +150,10 @@ boolean A_PM_NotAM_flag = false;
   int CurrentTime = 0;
   int TotalTime = 0;
 
-uint8_t SWDigit4 = 0;  
-uint8_t SWDigit3 = 0;   
-uint8_t SWDigit2 = 0; 
-uint8_t SWDigit1 = 0; 
+uint8_t SWDigit4 = 0;
+uint8_t SWDigit3 = 0;
+uint8_t SWDigit2 = 0;
+uint8_t SWDigit1 = 0;
 
 int SWMINUTES = 0;
 int SWSECONDS = 0;
@@ -172,7 +169,6 @@ boolean ALARMON = false;
 
 boolean scrollDirFlag = false;
 
-
 //
 volatile uint8_t Mcolumn = 0;
 //volatile uint8_t Mrow = 0;
@@ -184,10 +180,9 @@ volatile boolean TFH = false;
 
 const int digitoffset = 95;                // 95             // was 16
 
-
 // Constants
 // DS1337+ Address locations
-#define		RTCDS1337	B01101000               // was B11010000  
+#define		RTCDS1337	B01101000               // was B11010000
 #define		RTCCONT		B00001110		//; Control
 #define		RTCSTATUS       B00001111		//; Status
 
@@ -205,7 +200,6 @@ const int digitoffset = 95;                // 95             // was 16
 #define		RTC_ALARM1MIN	B00001000		//; Minuites
 #define		RTC_ALARM1HOUR	B00001001		//; Hours
 #define         RTC_ALARM1DATE  B00001010               //; Date
-
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Bit Map Letter - data array
@@ -256,7 +250,7 @@ const byte LETTERS[106][5] = {
   127,9,9,9,1,           // F
   62,65,73,73,50,        // G
   127,8,8,8,127,         // H
-  0,65,127,65,0,         // I  was   65,65,127,65,65, 
+  0,65,127,65,0,         // I  was   65,65,127,65,65,
   32,64,65,63,1,         // J
   127,8,20,34,65,        // K
   127,64,64,64,64,       // L
@@ -338,28 +332,3 @@ const byte GRAPHIC[5][5] = {
   16,32,16,8,4,            // Check mark
   34,20,8,20,34,           // "X"
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

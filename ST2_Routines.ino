@@ -25,24 +25,24 @@ void NextState()
 // (There is a current limited resistor on the board to prevent over current if the Set Button is pressed at
 //  the same time as the pin is driving the piezo.)
 
-void beepsound(int freq, int freqlenght)
+void beepsound(int freq, int freqlength)
 {
   // freq was 4000
-  // freqlenght was 100
+  // freqlength was 100
   pinMode(SETBUTTON, OUTPUT);
-  tone(SETBUTTON,freq,freqlenght);
-  delay(freqlenght);
+  tone(SETBUTTON,freq,freqlength);
+  delay(freqlength);
   noTone(SETBUTTON);
   digitalWrite(SETBUTTON, HIGH);
-  
-  #if ARDUINO >= 101 
+
+  #if ARDUINO >= 101
   pinMode(SETBUTTON, INPUT_PULLUP);
 //  digitalWrite(SETBUTTON, HIGH);
   #else
 //  digitalWrite(SETBUTTON, HIGH);
   pinMode(SETBUTTON, INPUT);
   #endif
-  
+
 }
 
 //*******************************************************************************************************************
@@ -75,7 +75,7 @@ void DisplayTimeSub()
   }
 
 
-  switch (SUBSTATE) 
+  switch (SUBSTATE)
   {
   case 0:                // Start Display Time
     SUBSTATE = 1;
@@ -83,10 +83,10 @@ void DisplayTimeSub()
     blinkFlag = false;
     blinkMin = false;
     blinkHour = false;
-    
+
     checktime();
     checkDate();
-    
+
     if(!JustWokeUpFlag2)
     {
     displayString("Time");
@@ -112,25 +112,25 @@ void DisplayTimeSub()
   case 3:              // Month
  //   checkDate();
     displayMonth(MonthCode-1);
-    break;      
+    break;
 
   case 4:              // Date
  //   checkDate();
     displayDate();
     delay(100);
-    break;  
+    break;
 
   case 5:              // Year
 
-    break;  
+    break;
 
   case 99:              // Exit Display Time
 
     NextState();
     clearmatrix();
 
-    break;  
-  }  
+    break;
+  }
 }
 
 //*******************************************************************************************************************
@@ -140,7 +140,7 @@ void setTimeSub()
 {
 
 
-  switch (SUBSTATE) 
+  switch (SUBSTATE)
   {
   case 0:                // Start SET Time
     clearmatrix();
@@ -173,7 +173,7 @@ void setTimeSub()
     writeTime(HourTens, HourOnes, MinTens, MinOnes);
     if(NextSUBStateRequest)
     {
-      settimeNEW(1);                                      
+      settimeNEW(1);
       NextSUBStateRequest = false;
     }
 
@@ -190,7 +190,7 @@ void setTimeSub()
     writeTime(HourTens, HourOnes, MinTens, MinOnes);
     if(NextSUBStateRequest)
     {
-      settimeNEW(2);                                     
+      settimeNEW(2);
       NextSUBStateRequest = false;
     }
 
@@ -201,13 +201,13 @@ void setTimeSub()
       NextStateRequest = false;
     }
 
-    break;      
+    break;
 
   case 4:                                                          // Day + one
     displayStringDay(Days -1);
     if(NextSUBStateRequest)
     {
-      settimeNEW(3);                                     
+      settimeNEW(3);
       NextSUBStateRequest = false;
     }
 
@@ -217,13 +217,13 @@ void setTimeSub()
       NextStateRequest = false;
     }
 
-    break;  
+    break;
 
   case 5:                                                          //  Month + one
     displayMonth(MonthCode-1);
     if(NextSUBStateRequest)
     {
-      settimeNEW(4);                                     
+      settimeNEW(4);
       NextSUBStateRequest = false;
     }
 
@@ -232,13 +232,13 @@ void setTimeSub()
       SUBSTATE =6;
       NextStateRequest = false;
     }
-    break;  
+    break;
 
   case 6:                                                          //  Date + one
     displayDate();
     if(NextSUBStateRequest)
     {
-      settimeNEW(5);                                     
+      settimeNEW(5);
       NextSUBStateRequest = false;
     }
     if(NextStateRequest)
@@ -246,18 +246,18 @@ void setTimeSub()
       SUBSTATE =8;
       NextStateRequest = false;
     }
-    break;     
+    break;
 
     /*
   case 7:                                                          //  Year + one ** NOTE: not used
-     displayString("Year"); 
-     
+     displayString("Year");
+
      if(NextSUBStateRequest)
      {
-     settimeNEW(6);                                     
+     settimeNEW(6);
      NextSUBStateRequest = false;
      }
-     
+
      if(NextStateRequest)
      {
      SUBSTATE =8;
@@ -275,17 +275,17 @@ void setTimeSub()
   case 9:                                                          // Select 12 or 24 hour clock
 
     if(NewTimeFormate)
-    {   
-      displayString("12 h"); 
+    {
+      displayString("12 h");
     }
-    else   
+    else
     {
       displayString("24 h");
     }
 
     if(NextSUBStateRequest)
     {
-      NewTimeFormate = !NewTimeFormate;                                     
+      NewTimeFormate = !NewTimeFormate;
       NextSUBStateRequest = false;
       TwelveTwentyFourConvert();
       A_TH_Not24_flag = NewTimeFormate;
@@ -298,14 +298,14 @@ void setTimeSub()
       NextStateRequest = false;
     }
 
-    break; 
+    break;
 
   case 99:              // Exit Set Time
     blinkFlag = false;
     NextState();
     clearmatrix();
 
-    break;    
+    break;
   }
 }
 
@@ -316,7 +316,7 @@ void setAlarmSub()
 {
 
 
-  switch (SUBSTATE) 
+  switch (SUBSTATE)
   {
   case 0:                // Start SET Alarm
     clearmatrix();
@@ -355,7 +355,7 @@ void setAlarmSub()
     writeTime(AHourTens, AHourOnes, AMinTens, AMinOnes);
     if(NextSUBStateRequest)
     {
-      setAlarm(1);                                      
+      setAlarm(1);
       NextSUBStateRequest = false;
     }
 
@@ -365,14 +365,14 @@ void setAlarmSub()
       SUBSTATE =3;
       NextStateRequest = false;
     }
-    break;   
+    break;
 
   case 3:
     blinkHour = true;
     writeTime(AHourTens, AHourOnes, AMinTens, AMinOnes);
     if(NextSUBStateRequest)
     {
-      setAlarm(2);                                      
+      setAlarm(2);
       NextSUBStateRequest = false;
     }
 
@@ -382,19 +382,19 @@ void setAlarmSub()
       SUBSTATE =4;
       NextStateRequest = false;
       //      EnableAlarm1(true);
-    }  
+    }
     break;
 
   case 4:
     if(ALARMON)
-    {   
-//      displayString("A ON"); 
+    {
+//      displayString("A ON");
       displayGraphic(1,0,5);
       displayGraphic(2,5,5);
       displayGraphic(0,10,4);
       displayGraphic(3,14,5);
     }
-    else   
+    else
     {
 //      displayString("AOFF");
       displayGraphic(1,0,5);
@@ -405,7 +405,7 @@ void setAlarmSub()
 
     if(NextSUBStateRequest)
     {
-      ALARMON = !ALARMON;                                     
+      ALARMON = !ALARMON;
       NextSUBStateRequest = false;
     }
 
@@ -414,7 +414,7 @@ void setAlarmSub()
     {
       blinkMin = false;
       SUBSTATE =99;
-      NextStateRequest = false;  
+      NextStateRequest = false;
       if(ALARMON)
       {
         EnableAlarm1(true);
@@ -425,16 +425,16 @@ void setAlarmSub()
       }
     }
 
-    break;  
+    break;
 
   case 99:              // Exit Set Alarm
     blinkFlag = false;
     NextState();
     clearmatrix();
 
-    break;      
+    break;
   }
-}  
+}
 
 //*******************************************************************************************************************
 // 								                              Stop Watch
@@ -442,8 +442,8 @@ void setAlarmSub()
 void StopWatch()
 {
 
-  switch (SUBSTATE) 
-  {  
+  switch (SUBSTATE)
+  {
   case 0:                                                          // Stop Watch Set-up
 
 
@@ -469,14 +469,14 @@ void StopWatch()
     clearmatrix();
     writeTime(SWDigit4, SWDigit3, SWDigit2, SWDigit1);
 
-    break; 
+    break;
 
   case 1:                                                          // Waiting for "Start" button to be pressed
     writeTime(SWDigit4, SWDigit3, SWDigit2, SWDigit1);
 
     if(NextSUBStateRequest)
     {
-      SUBSTATE = 2;    
+      SUBSTATE = 2;
       NextSUBStateRequest = false;
       SleepEnable = false;
       currentMillis = millis();
@@ -487,7 +487,7 @@ void StopWatch()
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
+    }
 
     break;
 
@@ -501,7 +501,7 @@ void StopWatch()
  //     OldTime = CurrentTime;
        SleepTimer = currentMillis;
       TotalTime = TotalTime + 1;
-      if(TotalTime > 5999)                                     // Over 99 minutes can "not" be displayed (60seconds x 99 = 5940) 
+      if(TotalTime > 5999)                                     // Over 99 minutes can "not" be displayed (60seconds x 99 = 5940)
       {
         TotalTime = 0;
       }
@@ -514,13 +514,13 @@ void StopWatch()
     SWDigit4 = SWMINUTES / 10;
     SWDigit3 = SWMINUTES % 10;
     SWDigit2 = SWSECONDS / 10;
-    SWDigit1 = SWSECONDS % 10;    
+    SWDigit1 = SWSECONDS % 10;
 
     writeTime(SWDigit4, SWDigit3, SWDigit2, SWDigit1);
 
     if(NextSUBStateRequest)
     {
-      SUBSTATE = 1;    
+      SUBSTATE = 1;
       NextSUBStateRequest = false;
       SleepEnable = true;
     }
@@ -529,10 +529,10 @@ void StopWatch()
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
-    break; 
-    
-/*    
+    }
+    break;
+
+/*
 // Not using this RTC version since it seems too power hungery due to constant I2C polling
   case 2:                                                          // Stop Watch Running
 
@@ -542,7 +542,7 @@ void StopWatch()
     {
       OldTime = CurrentTime;
       TotalTime = TotalTime + 1;
-      if(TotalTime > 5940)                                     // Over 99 minutes can "not" be displayed (60seconds x 99 = 5940) 
+      if(TotalTime > 5940)                                     // Over 99 minutes can "not" be displayed (60seconds x 99 = 5940)
       {
         TotalTime = 0;
       }
@@ -555,13 +555,13 @@ void StopWatch()
     SWDigit4 = SWMINUTES / 10;
     SWDigit3 = SWMINUTES % 10;
     SWDigit2 = SWSECONDS / 10;
-    SWDigit1 = SWSECONDS % 10;    
+    SWDigit1 = SWSECONDS % 10;
 
     writeTime(SWDigit4, SWDigit3, SWDigit2, SWDigit1);
 
     if(NextSUBStateRequest)
     {
-      SUBSTATE = 1;    
+      SUBSTATE = 1;
       NextSUBStateRequest = false;
       SleepEnable = true;
     }
@@ -570,8 +570,8 @@ void StopWatch()
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
-    break; 
+    }
+    break;
 */
   case 99:              // Exit Stop Watch Function
 
@@ -580,8 +580,8 @@ void StopWatch()
 
     SleepEnable = true;
 
-    break;   
-  } 
+    break;
+  }
 }
 
 //*******************************************************************************************************************
@@ -591,8 +591,8 @@ void StopWatch()
 void DisplaySerialData()
 {
   int temp =0;
-  switch (SUBSTATE) 
-  {  
+  switch (SUBSTATE)
+  {
 
   case 0:                                                          // Display Set-up
 
@@ -621,7 +621,7 @@ void DisplaySerialData()
     else
     {
       MessagePointer= 0;
-      SUBSTATE = 3; 
+      SUBSTATE = 3;
       SleepEnable = true;
     }
 
@@ -643,10 +643,10 @@ void DisplaySerialData()
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
-    break; 
+    }
+    break;
 
-    //    break;  
+    //    break;
 
   case 2:                                                          // Receive Serial
 
@@ -654,7 +654,7 @@ void DisplaySerialData()
     // LED MATRIX
     //
     // Port C: C0 to C3 set to high. Columns 17 to 20 of LED matrix - Cathode connection
-    PORTC = (PORTC & B11110000) | B00001111;      
+    PORTC = (PORTC & B11110000) | B00001111;
     // Port B: Unselect the MUX chip
     PORTB = (1<<PORTB7);
     // Port B: Set all the ROWs to high: High on both cathode and annode = no current ?
@@ -674,7 +674,7 @@ shortloop:
         IncomingMessIndex++;
         //   IncomingMessage[IncomingMessIndex] = '\0';
         Serial.print(MessageRead);
-      } 
+      }
     }
 
     bval = !digitalRead(SETBUTTON);
@@ -700,10 +700,10 @@ shortloop:
     }
     else
     {
-      SUBSTATE = 3; 
+      SUBSTATE = 3;
       FILLEEPROM();
       OptionModeFlag = false;
-      
+
 
     }
     SleepTimer = millis();
@@ -719,7 +719,7 @@ shortloop:
     {
       TEXT = IncomingMessage[i]-32;
       for(int y =0;y<5;y++)
-      {    
+      {
         Message[MessagePointer] = LETTERS[TEXT][y];
         MessagePointer = MessagePointer +1;
       }
@@ -742,21 +742,21 @@ shortloop:
     SleepEnable = true;
 
 
-    break;    
+    break;
 
     // ==================================================================================================
 
-  case 4:     
+  case 4:
 
     scrollCounter = scrollCounter +1;
     if(scrollCounter>scrollSpeed)
     {
-      
+
       if(ScrollLoops > 0)
       {
         SleepTimer = millis();
       }
-      
+
       IncomingIndex = StartWindow;
       for(int i=0;i<20;i++)
       {
@@ -793,7 +793,7 @@ shortloop:
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
+    }
 
     if(OptionModeFlag)
     {
@@ -801,7 +801,7 @@ shortloop:
       displayString("NEW?");
       delay(250);
     }
-    break;  
+    break;
 
   case 99:              // Exit Stop Watch Function
 
@@ -813,7 +813,7 @@ shortloop:
 
     SleepEnable = true;
 
-    break;  
+    break;
   }
 }
 
@@ -829,12 +829,12 @@ void ResetScrollMessage()
   scrollCounter = 0;
 
   for(int i =0;i<275;i++)
-  {    
+  {
     Message[i] = 0;
   }
 
   for(int i =0;i<24;i++)
-  {    
+  {
     IncomingMessage[i] = 0;
   }
 }
@@ -847,8 +847,8 @@ void graphican()
 
   int temp =0;
   //  int rand = 0;
-  switch (SUBSTATE) 
-  {  
+  switch (SUBSTATE)
+  {
 
   case 0:
     SUBSTATE =1;
@@ -860,9 +860,9 @@ void graphican()
     targdist = 0;
     displayString("Worm");
     delay(250);
-    break;  
+    break;
 
-  case 1:      
+  case 1:
 
     if(scrollCounter>scrollSpeed)
     {
@@ -872,7 +872,7 @@ void graphican()
       {
         c = 0;
       }
-      // --     
+      // --
 
 
       if(NextSUBStateRequest)
@@ -931,15 +931,15 @@ void graphican()
       bitSet(temp, y);
 
 
-      // --         
+      // --
       LEDMAT[c] = temp;
-      if((c-wormlenght)<0)
+      if((c-wormlength)<0)
       {
-        LEDMAT[19-((wormlenght-1)-c)] = 0;
+        LEDMAT[19-((wormlength-1)-c)] = 0;
       }
       else
       {
-        LEDMAT[c-wormlenght] = 0;
+        LEDMAT[c-wormlength] = 0;
       }
       scrollCounter = 0;
     }
@@ -950,12 +950,12 @@ void graphican()
     {
       SUBSTATE =99;
       NextStateRequest = false;
-    }  
+    }
 
     if(OptionModeFlag)
     {
       soundeffect = !soundeffect;
-    }   
+    }
 
     scrollCounter = scrollCounter +1;
     break;
@@ -967,7 +967,7 @@ void graphican()
     NextState();
     clearmatrix();
 
-    break;  
+    break;
 
   }
 }
@@ -1023,7 +1023,7 @@ void lamptest()
   //*******************************************************************************************************************
   //                                                                                         Read Message from EEPROM			
   //*******************************************************************************************************************
-  void GETFROMEEPROM() 
+  void GETFROMEEPROM()
   {
     int EEPadd;
     IncomingMessIndex = EEPROM.read(0);
@@ -1039,14 +1039,14 @@ void lamptest()
 void FILLEEPROM()                                                      // Normally only run once if EEPROM is clear
 {
   int EEPadd;
-  EEPROM.write(0, IncomingMessIndex);                                  // Holds the message lenght
+  EEPROM.write(0, IncomingMessIndex);                                  // Holds the message length
 
   for(int EEPadd=1; EEPadd < IncomingMessIndex+1; EEPadd++)
   {
 
     EEPROM.write(EEPadd, IncomingMessage[EEPadd-1]);
   }
-  // EEPROM.write(25, 1);                                      // 1 is just a number we selected to show EEPROM was writen
+//EEPROM.write(25, 1);                                      // 1 is just a number we selected to show EEPROM was writen
 }
 
 
@@ -1056,15 +1056,15 @@ void FILLEEPROM()                                                      // Normal
 void displayString(char outText[])
 {
   int  cindex = 0;
-//  for (int i = 0; i < sizeof(Str1) - 1; i++){
-    for (int i = 0; i < 4; i++){
-    for(int y =0;y<5;y++)
-    { 
-      TEXT = outText[i]-32;   
-      LEDMAT[cindex] = LETTERS[TEXT][y]; 
-      cindex = cindex +1;     
+  for(int i = 0; i < 4; i++)
+  {
+    for(int y = 0; y < 5; y++)
+    {
+      TEXT = outText[i]-32;
+      LEDMAT[cindex] = LETTERS[TEXT][y];
+      cindex = cindex +1;
     }
-  }  
+  }
 }
 
 //*******************************************************************************************************************
@@ -1072,11 +1072,11 @@ void displayString(char outText[])
 //*******************************************************************************************************************
 void displayGraphic(int index, int pos, int len)
 {
-    for(int y =0;y<len;y++)
-    {    
-      LEDMAT[pos] = GRAPHIC[index][y]; 
-      pos = pos +1;    
-    }  
+  for(int y = 0; y < len; y++)
+  {
+    LEDMAT[pos] = GRAPHIC[index][y];
+    pos = pos +1;
+  }
 }
 
 //*******************************************************************************************************************
@@ -1087,16 +1087,17 @@ void displayStringDay(int day)
   int  cindex = 0;
   if(blinkON)
   {
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 3; i++)
+    {
       LEDMAT[cindex] = 0;
       cindex = cindex +1;
-      for(int y =0;y<5;y++)
-      { 
-        TEXT = days[day][i]-32;   
-        LEDMAT[cindex] = LETTERS[TEXT][y]; 
-        cindex = cindex +1;     
+      for(int y = 0; y < 5; y++)
+      {
+        TEXT = days[day][i]-32;
+        LEDMAT[cindex] = LETTERS[TEXT][y];
+        cindex = cindex +1;
       }
-    } 
+    }
     LEDMAT[cindex] = 0;
     LEDMAT[cindex+1] = 0;
   }
@@ -1114,16 +1115,17 @@ void displayMonth(int code)
   int  cindex = 0;
   if(blinkON)
   {
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 3; i++)
+    {
       LEDMAT[cindex] = 0;
       cindex = cindex +1;
-      for(int y =0;y<5;y++)
-      { 
-        TEXT = months[code][i]-32;   
-        LEDMAT[cindex] = LETTERS[TEXT][y]; 
-        cindex = cindex +1;     
+      for(int y = 0; y < 5; y++)
+      {
+        TEXT = months[code][i]-32;
+        LEDMAT[cindex] = LETTERS[TEXT][y];
+        cindex = cindex +1;
       }
-    } 
+    }
     LEDMAT[cindex] = 0;
     LEDMAT[cindex+1] = 0;
   }
@@ -1140,29 +1142,29 @@ void displayDate()
 {
   int y =0;
   int i =0;
-  // clearmatrix();
+//clearmatrix();
   if(blinkON)
   {
-    for( i = 0; i <5; i++)
+    for(i = 0; i < 5; i++)
     {
       LEDMAT[i] = 0;
     }
 
-    for( i = 5; i <10; i++)
+    for(i = 5; i < 10; i++)
     {
-      LEDMAT[i] = LETTERS[DateTens+digitoffset][y];
-      y=y+1;
+      LEDMAT[i] = LETTERS[DateTens + digitoffset][y];
+      y = y + 1;
     }
 
-    y=0;
+    y = 0;
 
-    for( i = 10; i <15; i++)
+    for(i = 10; i < 15; i++)
     {
-      LEDMAT[i] = LETTERS[DateOnes+digitoffset][y];
-      y=y+1;
+      LEDMAT[i] = LETTERS[DateOnes + digitoffset][y];
+      y = y + 1;
     }
 
-    for( i = 15; i <20; i++)
+    for(i = 15; i < 20; i++)
     {
       LEDMAT[i] = 0;
     }
@@ -1181,27 +1183,27 @@ void displayYear()
   int y =0;
   int i =0;
   // clearmatrix();
-  for( i = 0; i <5; i++)
+  for(i = 0; i < 5; i++)
   {
     LEDMAT[i] = LETTERS[DateTens+digitoffset][y];
-    y=y+1;
+    y = y + 1;
   }
 
-  for( i = 5; i <10; i++)
+  for(i = 5; i < 10; i++)
   {
-    LEDMAT[i] = LETTERS[DateTens+digitoffset][y];
-    y=y+1;
+    LEDMAT[i] = LETTERS[DateTens + digitoffset][y];
+    y = y + 1;
   }
 
   y=0;
 
-  for( i = 10; i <15; i++)
+  for(i = 10; i < 15; i++)
   {
-    LEDMAT[i] = LETTERS[DateOnes+digitoffset][y];
-    y=y+1;
+    LEDMAT[i] = LETTERS[DateOnes + digitoffset][y];
+    y = y + 1;
   }
 
-  for( i = 15; i <20; i++)
+  for(i = 15; i < 20; i++)
   {
     LEDMAT[i] = LETTERS[DateTens+digitoffset][y];
     y=y+1;
@@ -1211,10 +1213,10 @@ void displayYear()
 //void fillmatrix()                                                    // Fill Matrix with some text
 //{
 // for(int i =0;i<20;i=i+5)
-//  {  
+//  {
 //    for(int y =0;y<5;y++)
-//    {      
-//      LEDMAT[i+y] = LETTERS[TEXT][y];      
+//    {
+//      LEDMAT[i+y] = LETTERS[TEXT][y];
 //    }
 //    TEXT = TEXT +1;
 //  }
@@ -1228,7 +1230,7 @@ void scrollleft()                                                    // Shift al
   int i= 0;
   uint8_t temp =0;
   temp = LEDMAT[0];
-  for(int i =0;i<20;i++)
+  for(int i = 0; i < 20; i++)
   {
     LEDMAT[i] = LEDMAT[i+1];
   }
@@ -1239,10 +1241,10 @@ void scrollleft()                                                    // Shift al
 /*
 void scrollRight()                                                    // Shift all dots one space left
 {
-  int i= 0;
-  uint8_t temp =0;
+  int i = 0;
+  uint8_t temp = 0;
   temp = LEDMAT[19];
-  for(int i =19;i>0;i--)
+  for(int i = 19; i > 0; i--)
   {
     LEDMAT[i] = LEDMAT[i-1];
   }
@@ -1256,7 +1258,7 @@ void scrollRight()                                                    // Shift a
 
 void clearmatrix()
 {
-  for(int i =0;i<20;i++)
+  for(int i = 0; i < 20; i++)
   {
     LEDMAT[i] = 0;
   }
@@ -1267,12 +1269,12 @@ void clearmatrix()
 // 								               Output single character to display
 //*******************************************************************************************************************
 
-void filldigit(int dig, int index)        // Where dig is 1 to 4 and index is position of character 
+void filldigit(int dig, int index)        // Where dig is 1 to 4 and index is position of character
 {
-  for(int y =0;y<5;y++)
-  {      
-    LEDMAT[((dig-1)*5)+y] = LETTERS[index][y];      
-  }    
+  for(int y = 0; y < 5; y++)
+  {
+    LEDMAT[((dig - 1) * 5) + y] = LETTERS[index][y];
+  }
 }
 
 //*******************************************************************************************************************
@@ -1283,26 +1285,26 @@ void filldigit(int dig, int index)        // Where dig is 1 to 4 and index is po
 // Blinks if it settng mode
 // displays AM/PM dot and Alarm on dot
 
-void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)         
+void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
 {
   int currentdig = 4;
   int y = 0;
   int i = 18;
   LEDMAT[19] = 0;
 //  LEDMAT[0] = 0;
-  
-  for( y =5;y>1;y--)
-  {      
+
+  for(y = 5; y > 1; y--)
+  {
     if(blinkON && (blinkMin))
     {
-      LEDMAT[i] = LETTERS[0][y-2];                            // blank space
+      LEDMAT[i] = LETTERS[0][y - 2];                            // blank space
     }
     else
     {
-      LEDMAT[i] = LETTERS[dig4+digitoffset][y-2]; 
+      LEDMAT[i] = LETTERS[dig4 + digitoffset][y - 2];
     }
-    i = i -1;    
-  }    
+    i = i - 1;
+  }
   //  }
 
   if(dig3 == 1)                                              // Special case of #1, smaller kerning
@@ -1317,42 +1319,42 @@ void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
       LEDMAT[i-1] = 62; //LETTERS[dig3+digitoffset][3];
     }
     LEDMAT[i-2] = 0;
-    i = i -3;
+    i = i - 3;
     currentdig = 2;
   }
   else
   {
-    for( y =5;y>1;y--)
-    {      
+    for(y = 5; y > 1; y--)
+    {
       if(blinkON && (blinkMin))
       {
-        LEDMAT[i] = LETTERS[0][y-2];                          // blank space
+        LEDMAT[i] = LETTERS[0][y - 2];                          // blank space
       }
       else
       {
-        LEDMAT[i] = LETTERS[dig3+digitoffset][y-2]; 
+        LEDMAT[i] = LETTERS[dig3 + digitoffset][y - 2];
       }
-      i = i -1;    
-    }    
+      i = i -1;
+    }
     currentdig = 2;
   }
   // ADD Colon Here - S ---------------------------------
-  if((dig2 == 1) || (dig1 == 3)) 
+  if((dig2 == 1) || (dig1 == 3))
   {
     LEDMAT[i] = 0;
 
     LEDMAT[i-1] = 20; //LETTERS[26][3];                        // the " : "
 
     LEDMAT[i-2] = 0;
-    i=i-3;     
+    i=i-3;
   }
   else
   {
     LEDMAT[i] = 20; //LETTERS[26][3];                          // the " :"
     LEDMAT[i-1] = 0;
-    i=i-2;    
+    i=i-2;
   }
-  // ADD Colon Here - E ---------------------------------    
+  // ADD Colon Here - E ---------------------------------
 
   if(dig2 == 1)                                                // Special case of #1, smaller kerning
   {
@@ -1371,18 +1373,18 @@ void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
   }
   else
   {
-    for( y =5;y>1;y--)
-    {      
+    for(y = 5; y > 1; y--)
+    {
       if(blinkON && (blinkHour))
       {
         LEDMAT[i] = LETTERS[0][y-2];                          // blank space
       }
       else
       {
-        LEDMAT[i] = LETTERS[dig2+digitoffset][y-2]; 
+        LEDMAT[i] = LETTERS[dig2+digitoffset][y-2];
       }
-      i = i -1;    
-    }    
+      i = i - 1;
+    }
     currentdig = 1;
   }
 
@@ -1402,23 +1404,22 @@ void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
   }
   else
   {
-    for( y =5;y>1;y--)
-    {                  
+    for( y = 5; y > 1; y--)
+    {
       if(blinkON && (blinkHour))
       {
         LEDMAT[i] = LETTERS[0][y-2];                          // blank space
       }
       else
       {
-        LEDMAT[i] = LETTERS[dig1+digitoffset][y-2]; 
+        LEDMAT[i] = LETTERS[dig1 + digitoffset][y-2];
       }
-      i = i -1;    
-    }    
+      i = i - 1;
+    }
    // i = 0;
   }
-  
-//  for(y= i+1; y>0;y--)                                        // Clear any remaining columns
-    for(y= i+1; y>1;y--)                                        // Clear any remaining columns, but not leftmost
+
+    for(y = i + 1; y > 1; y--)                                        // Clear any remaining columns, but not leftmost
   {
     LEDMAT[y-1] = 0;
   }
@@ -1431,19 +1432,18 @@ void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
 //    bitSet(LEDMAT[0],6);
    bitSet(AMPMALARMDOTS,6);
   }
-  
+
    if(PM_NotAM_flag && (STATE == 1 | STATE == 2) && TH_Not24_flag)     // AM / PM dot (bottom left) (Display or Set Time)
   {
 //    bitSet(LEDMAT[0],0);
    bitSet(AMPMALARMDOTS,0);
-  } 
-  
+  }
+
      if(A_PM_NotAM_flag && (STATE == 3) && TH_Not24_flag)              // AM / PM dot (bottom left) (Set Alarm Time)
   {
 //    bitSet(LEDMAT[0],0);
    bitSet(AMPMALARMDOTS,0);
-  } 
-  
+  }
+
   LEDMAT[0] = AMPMALARMDOTS;
-  
 }
