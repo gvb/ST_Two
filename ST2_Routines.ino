@@ -768,21 +768,103 @@ void graphican()
 //****************************************************************************
 void playMusic()
 {
-#define QNOTE 400
+#define QNOTE   400
 
-  for (int j = 0; j < 8; j++) { // 9-12 is G-Bb chord
-    beepsound(466, QNOTE);      // Bb
-    beepsound(440, QNOTE / 2);  // A
-    beepsound(466, QNOTE / 2);  // Bb
-    beepsound(392, QNOTE);      // G
-  }
-  for (int j = 0; j < 4; j++) {
-    beepsound(587, QNOTE);      // D
-    beepsound(523, QNOTE / 2);  // C
-    beepsound(587, QNOTE / 2);  // D
-    beepsound(466, QNOTE);      // Bb
-  }
+#define C7      2093
+#define D7      2349
+#define E7b     2489
+#define F7      2793
+#define G7      3136
+#define A7      3520
+#define B7b     3729
+#define C8      4186
+#define D8      4699
+#define E8b     4978
+#define F8      5588
+#define G8      6272
+static const struct {
+  int note;
+  int duration;
+} notes[] = 
+{
+  // First phrase
+  {B7b, QNOTE},      // 0
+  {A7, QNOTE / 2},
+  {B7b, QNOTE / 2},
+  {G7, QNOTE},
+  // Second phrase
+  {D8, QNOTE},      // 4
+  {C8, QNOTE / 2},
+  {D8, QNOTE / 2},
+  {B7b, QNOTE},
+  // Third phrase
+  {G8, QNOTE},      // 8
+  {G8, QNOTE / 2},
+  {G8, QNOTE / 2},
+  {F8, QNOTE / 2},
+  {E8b, QNOTE / 2},
 
+  {D8, QNOTE},
+  {D8, QNOTE / 2},
+  {D8, QNOTE / 2},
+  {C7, QNOTE / 2},
+  {B7b, QNOTE / 2},
+
+  {C7, QNOTE},
+  {C7, QNOTE / 2},
+  {C7, QNOTE / 2},
+  {D8, QNOTE / 2},
+  {C7, QNOTE / 2},
+
+  {B7b, QNOTE},
+  {A7, QNOTE / 2},
+  {B7b, QNOTE / 2},
+  {G7, QNOTE},
+  // Fourth phrase (run up)
+  {D7, QNOTE / 2}, // 27
+  {E7b, QNOTE / 2},
+  {F7, QNOTE / 2},
+  {G7, QNOTE / 2},
+  {A7, QNOTE / 2},
+  {B7b, QNOTE / 2},
+
+  {C8, QNOTE / 2},
+  {D8, QNOTE / 2},
+  {C8, QNOTE},
+  {B7b, QNOTE},
+};
+static const struct {
+  int repeats;
+  int first;
+  int last;
+} phrases[5] =
+{
+  {4, 0, 3},
+  {4, 4, 7},
+  {1, 8, 26},
+  {2, 27, 36},
+  {4, 0, 3},
+};
+
+  pinMode(SETBUTTON, OUTPUT);
+  for (int phrase = 0; phrase < 5; phrase++) {
+    for (int j = 0; j < phrases[phrase].repeats; j++) {
+      for (int k = phrases[phrase].first; k <= phrases[phrase].last; k++) {
+        tone(SETBUTTON, notes[k].note);
+        delay(notes[k].duration);
+        noTone(SETBUTTON);
+        delay(QNOTE / 8);
+      }
+    }
+  }
+  noTone(SETBUTTON);
+  digitalWrite(SETBUTTON, HIGH);
+
+#if ARDUINO >= 101
+  pinMode(SETBUTTON, INPUT_PULLUP);
+#else
+  pinMode(SETBUTTON, INPUT);
+#endif
   STATE = SLEEP;
 }
 
