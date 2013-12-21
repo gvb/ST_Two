@@ -481,7 +481,8 @@ void DisplaySerialData()
 //    delay(250);
 
     GETFROMEEPROM();
-    if (IncomingMessIndex == 0 | IncomingMessIndex > 27) {
+    if (IncomingMessIndex == 0 ||
+        IncomingMessIndex >= sizeof(IncomingMessage)) {
       MessagePointer = 0;
       SUBSTATE = 3;
       char Str2[] = "SpikenzieLabs";
@@ -530,10 +531,9 @@ shortloop:
     if (Serial.available() > 0) {
       MessageRead = Serial.read();
 
-      if (IncomingMessIndex < 24) {
+      if (IncomingMessIndex < sizeof(IncomingMessage)) {
         IncomingMessage[IncomingMessIndex] = MessageRead;
         IncomingMessIndex++;
-        IncomingMessage[IncomingMessIndex] = '\0';
         Serial.print(MessageRead);
       }
     }
@@ -566,12 +566,14 @@ shortloop:
   case 3:
     for (int i = 0; i <= IncomingMessIndex - 1; i++) {
       TEXT = IncomingMessage[i] - 32;
-      for (int y = 0; y < 5; y++) {
-        Message[MessagePointer] = LETTERS[TEXT][y];
-        MessagePointer = MessagePointer + 1;
+      if ((TEXT >= 0) && (TEXT < (sizeof(LETTERS) / sizeof(LETTERS[0])))) {
+        for (int y = 0; y < 5; y++) {
+          Message[MessagePointer] = LETTERS[TEXT][y];
+          MessagePointer = MessagePointer + 1;
+        }
       }
 
-      Message[MessagePointer] = 0;  // One space between words
+      Message[MessagePointer] = 0;  // One space between letters
       MessagePointer = MessagePointer + 1;
       IncomingMax = MessagePointer;
     }
@@ -662,11 +664,11 @@ void ResetScrollMessage()
   IncomingLoaded = 0;
   scrollCounter = 0;
 
-  for (int i = 0; i < 275; i++) {
+  for (int i = 0; i < sizeof(Message); i++) {
     Message[i] = 0;
   }
 
-  for (int i = 0; i < 24; i++) {
+  for (int i = 0; i < sizeof(IncomingMessage); i++) {
     IncomingMessage[i] = 0;
   }
 }
@@ -763,12 +765,8 @@ void graphican()
   }
 }
 
-//****************************************************************************
-// Play a song
-//****************************************************************************
-void playMusic()
-{
-#define QNOTE   400
+#ifdef MUSIC  //--------------------------------------------------------------
+#define QNOTE   400     // Milliseconds in a quarter note
 
 #define C7      2093
 #define D7      2349
@@ -782,6 +780,7 @@ void playMusic()
 #define E8b     4978
 #define F8      5588
 #define G8      6272
+
 static const struct {
   int note;
   int duration;
@@ -833,6 +832,7 @@ static const struct {
   {C8, QNOTE},
   {B7b, QNOTE},
 };
+
 static const struct {
   int repeats;
   int first;
@@ -846,6 +846,11 @@ static const struct {
   {4, 0, 3},
 };
 
+//****************************************************************************
+// Play a song
+//****************************************************************************
+void playMusic()
+{
   pinMode(SETBUTTON, OUTPUT);
   for (int phrase = 0; phrase < 5; phrase++) {
     for (int j = 0; j < phrases[phrase].repeats; j++) {
@@ -867,14 +872,15 @@ static const struct {
 #endif
   STATE = SLEEP;
 }
+#endif MUSIC  //--------------------------------------------------------------
 
 //****************************************************************************
 // LED tester
 //****************************************************************************
 void lamptest()
 {
-
   int lamptestspeed = 250;
+
   clearmatrix();
   bval = !digitalRead(SETBUTTON);
   if (bval) {
@@ -915,7 +921,7 @@ void GETFROMEEPROM()
 {
   int EEPadd;
   IncomingMessIndex = EEPROM.read(0);
-  for (int EEPadd = 1; EEPadd < 26; EEPadd++) {
+  for (int EEPadd = 1; EEPadd < sizeof(IncomingMessage) + 1; EEPadd++) {
     IncomingMessage[EEPadd - 1] = EEPROM.read(EEPadd);
   }
 }

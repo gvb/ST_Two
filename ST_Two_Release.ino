@@ -53,12 +53,12 @@
 #define SCROLLING_TEXT	1       // Serial Display
 #define TIME		2       // Display Time
 #define SET_TIME	3       // Set Time
-#define MUSIC		4       // Play a tune
+//#define MUSIC		4       // Play a tune
 //#define CONFIG_ALARM    4       // Config Alarm
 //#define STOPWATCH       5       // Stop Watch
 //#define GRAPHIC_DEMO    6       // Graphic Demo
 
-#define MAXSTATE	4       // Maximum user-controlled state
+#define MAXSTATE	3       // Maximum user-controlled state
 #define	ALARM_TRIGGERED	90      // Alarm Triggered
 #define	SLEEP		99      // Sleep
 
@@ -95,13 +95,15 @@ int UpdateTime = 0;
 #define SETBUTTON 3
 boolean bval = false;
 
-char IncomingMessage[24];
-char MessageRead;
-uint8_t Message[275];
-int IncomingIndex = 0;
+// The message is saved in EEPROM as IncomingMessIndex, text[]
 int IncomingMessIndex = 0;
-int IncomingMax = 0;
+char IncomingMessage[63];
+// The message is a pixel image of the text
 int MessagePointer = 0;
+uint8_t Message[sizeof(IncomingMessage) * 6 + 20];
+char MessageRead;
+int IncomingIndex = 0;
+int IncomingMax = 0;
 int StartWindow = 0;
 int IncomingLoaded = 0;
 
