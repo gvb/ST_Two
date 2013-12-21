@@ -157,8 +157,8 @@ void loop()
 // ---------------------------------------------------------------------------
 
   case SLEEP:                  // Sleep
-    displayString("Nite");
-    delay(500);
+//    displayString("Nite");
+//    delay(500);
     clearmatrix();
     GoToSleep();
     SleepTimer = millis();

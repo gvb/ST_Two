@@ -564,7 +564,7 @@ shortloop:
     break;
 
   case 3:
-    for (int i = 0; i <= IncomingMessIndex - 1; i++) {
+    for (int i = 0; i < IncomingMessIndex; i++) {
       TEXT = IncomingMessage[i] - 32;
       if ((TEXT >= 0) && (TEXT < (sizeof(LETTERS) / sizeof(LETTERS[0])))) {
         for (int y = 0; y < 5; y++) {
@@ -575,7 +575,6 @@ shortloop:
 
       Message[MessagePointer] = 0;  // One space between letters
       MessagePointer = MessagePointer + 1;
-      IncomingMax = MessagePointer;
     }
 
     for (int i = 0; i < 20; i++)  // 20 spaces between phrases
@@ -586,7 +585,7 @@ shortloop:
     }
 
     SUBSTATE = 4;
-    ScrollLoops = 3;
+    ScrollLoops = 1;
     SleepEnable = true;
     break;
 
@@ -607,16 +606,15 @@ shortloop:
         if (IncomingIndex > IncomingMax) {
           // Rolled over end of message
           IncomingIndex = 0;
-
-// Used to extend number of messages to scroll before sleep mode reactivated
-//          ScrollLoops = ScrollLoops - 1;
+          ScrollLoops = ScrollLoops - 1;
+          if (ScrollLoops <= 0) {
+            STATE = SLEEP;
+          }
         }
       }
       StartWindow = StartWindow + 1;
-      if (StartWindow > IncomingMax) {
+      if (StartWindow >= IncomingMax) {
         StartWindow = 0;
-// Used to extend number of messages to scroll before sleep mode reactivated
-        ScrollLoops = ScrollLoops - 1;
       }
       scrollCounter = 0;
     }
