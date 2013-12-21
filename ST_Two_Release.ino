@@ -48,21 +48,22 @@
 #include <avr/power.h>
 #include <avr/wdt.h>
 
-// Worm animation
-int c = 0;
-int y = 3;
-int target = 3;
-int targdist = 0;
-boolean targdir = true;
-int wormlength = 15;
-boolean soundeffect = false;
+// STATE (main) states
+#define SETUP		0		// Set-Up
+#define SCROLLING_TEXT	1		// Serial Display
+#define TIME		2		// Display Time
+#define SET_TIME	3		// Set Time
+#define MUSIC		4		// Play a tune
+//#define CONFIG_ALARM	4		// Config Alarm
+//#define STOPWATCH	5		// Stop Watch
+//#define GRAPHIC_DEMO	6		// Graphic Demo
 
-uint8_t TEXT = 65;
-uint8_t i2cData = 0;
+#define MAXSTATE	4		// Maximum user-controlled state
+#define	ALARM_TRIGGERED	90		// Alarm Triggered
+#define	SLEEP		99		// Sleep
 
 int STATE = 0;
 int SUBSTATE = 0;
-int MAXSTATE = 6;
 boolean NextStateRequest = false;
 boolean NextSUBStateRequest = false;
 boolean JustWokeUpFlag = false;
@@ -104,6 +105,17 @@ int MessagePointer = 0;
 int StartWindow = 0;
 int IncomingLoaded = 0;
 
+// Worm animation
+int c = 0;
+int y = 3;
+int target = 3;
+int targdist = 0;
+boolean targdir = true;
+int wormlength = 15;
+boolean soundeffect = false;
+
+uint8_t TEXT = 65;
+uint8_t i2cData = 0;
 char days[7][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat"
 };

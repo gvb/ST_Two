@@ -478,8 +478,8 @@ void DisplaySerialData()
 		NextSUBStateRequest = false;
 		NextStateRequest = false;
 		OptionModeFlag = false;
-		displayString("Text");
-		delay(250);
+//		displayString("Text");
+//		delay(250);
 
 		GETFROMEEPROM();
 		if (IncomingMessIndex == 0 | IncomingMessIndex > 27) {
@@ -764,6 +764,17 @@ void graphican()
 		clearmatrix();
 		break;
 	}
+}
+
+//****************************************************************************
+// Play a song
+//****************************************************************************
+void playMusic()
+{
+	beepsound(466, 666);
+	beepsound(440, 333);
+	beepsound(466, 333);
+	beepsound(392, 666);
 }
 
 //****************************************************************************

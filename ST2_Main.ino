@@ -9,7 +9,7 @@ void loop()
 	OptionModeFlag = false;
 
 	if (((currentMillis - SleepTimer) > SleepLimit) && SleepEnable) {
-		STATE = 99;
+		STATE = SLEEP;
 	}
 	// Test for Mode Button Press ------------------------------------*
 
@@ -23,7 +23,7 @@ void loop()
 			ALARM1FLAG = false;
 			ALARMON = false;
 			EnableAlarm1(false);
-			STATE = 90;
+			STATE = ALARM_TRIGGERED;
 			JustWokeUpFlag = false;
 		} else {
 			if (JustWokeUpFlag) {
@@ -32,7 +32,7 @@ void loop()
 			} else {
 				NextStateRequest = true;
 			}
-//    SUBSTATE = 99;
+//    SUBSTATE = SLEEP;
 
 			while (bval) {
 				bval = !digitalRead(SETBUTTON);
@@ -86,37 +86,47 @@ void loop()
 //****************************************************************************
 
 	switch (STATE) {
-	case 0:		// Set-Up
-		STATE = 1;
+	case SETUP:
+		STATE++;
 		break;
-
-	case 1:		// Display Time
+#ifdef TIME
+	case TIME:
 		DisplayTimeSub();
 		break;
-
-	case 2:		// Set Time
+#endif
+#ifdef SET_TIME
+	case SET_TIME:
 		setTimeSub();
 		break;
-
-	case 3:		// Config Alarm
+#endif
+#ifdef CONFIG_ALARM
+	case CONFIG_ALARM:
 		setAlarmSub();
 		break;
-
-	case 4:		// Stop Watch
+#endif
+#ifdef STOPWATCH
+	case STOPWATCH:
 		StopWatch();
 		break;
-
-	case 5:		// Serial Display
+#endif
+#ifdef SCROLLING_TEXT
+	case SCROLLING_TEXT:
 		DisplaySerialData();
 		break;
-
-	case 6:		// Graphic Demo
+#endif
+#ifdef GRAPHIC_DEMO
+	case GRAPHIC_DEMO:
 		graphican();
 		break;
-
+#endif
+#ifdef MUSIC
+	case MUSIC:
+		playMusic();
+		break;
+#endif
 // ---------------------------------------------------------------------------
 
-	case 90:		// Alarm Triggered
+	case ALARM_TRIGGERED:		// Alarm Triggered
 
 		blinkFlag = true;
 		displayString("Beep");
@@ -136,7 +146,7 @@ void loop()
 		delay(250);
 
 		if (NextSUBStateRequest | NextStateRequest) {
-			STATE = 0;
+			STATE = SETUP;
 			SUBSTATE = 0;
 			NextStateRequest = false;
 			NextSUBStateRequest = false;
@@ -146,13 +156,13 @@ void loop()
 
 // ---------------------------------------------------------------------------
 
-	case 99:		// Sleep
+	case SLEEP:		// Sleep
 		displayString("Nite");
 		delay(500);
 		clearmatrix();
 		GoToSleep();
 		SleepTimer = millis();
-		STATE = 0;
+		STATE = SETUP;
 		SUBSTATE = 0;
 		break;
 
