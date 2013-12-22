@@ -586,6 +586,8 @@ shortloop:
 
     SUBSTATE = 4;
     ScrollLoops = 1;
+    // Start at the end to smooth scroll the message onto the screen
+    StartWindow = IncomingMax - 20;
     SleepEnable = true;
     break;
 
@@ -603,18 +605,20 @@ shortloop:
       for (int i = 0; i < 20; i++) {
         LEDMAT[i] = Message[IncomingIndex];
         IncomingIndex = IncomingIndex + 1;
-        if (IncomingIndex > IncomingMax) {
+        if (IncomingIndex >= IncomingMax) {
           // Rolled over end of message
           IncomingIndex = 0;
-          ScrollLoops = ScrollLoops - 1;
-          if (ScrollLoops <= 0) {
-            STATE = SLEEP;
-          }
         }
       }
       StartWindow = StartWindow + 1;
       if (StartWindow >= IncomingMax) {
         StartWindow = 0;
+      }
+      if (StartWindow == IncomingMax - 20) {
+        ScrollLoops = ScrollLoops - 1;
+        if (ScrollLoops <= 0) {
+          STATE = SLEEP;
+        }
       }
       scrollCounter = 0;
     }
@@ -1238,23 +1242,31 @@ void SetWakeup(void) {
   wakeupMinTens = MinTens;
   wakeupHourOnes = HourOnes;
   wakeupHourTens = HourTens;
-  if (wakeupMinOnes < 5) {
-    wakeupMinOnes = 5;
-  } else {
+
+  // After 17:00, sleep till 08:00 to conserve battery power
+  if (((HourTens * 10) + HourOnes) >= 17) {
     wakeupMinOnes = 0;
-    wakeupMinTens++;
-    if (wakeupMinTens >= 6) {
-      wakeupMinTens = 0;
-      wakeupHourOnes++;
-      if (wakeupHourOnes >= 9) {
-        wakeupHourOnes = 0;
-        wakeupHourTens++;
-        if (wakeupHourTens >= 3)
-          wakeupHourTens = 0;
+    wakeupMinTens = 0;
+    wakeupHourOnes = 8;
+    wakeupHourTens = 0;
+  } else {
+    if (wakeupMinOnes < 5) {
+      wakeupMinOnes = 5;
+    } else {
+      wakeupMinOnes = 0;
+      wakeupMinTens++;
+      if (wakeupMinTens >= 6) {
+        wakeupMinTens = 0;
+        wakeupHourOnes++;
+        if (wakeupHourOnes >= 9) {
+          wakeupHourOnes = 0;
+          wakeupHourTens++;
+          if (wakeupHourTens >= 3)
+            wakeupHourTens = 0;
+        }
       }
     }
   }
-
   SetAlarm2Time(wakeupHourTens, wakeupHourOnes, wakeupMinTens, wakeupMinOnes);
   EnableAlarm2(true);
 }

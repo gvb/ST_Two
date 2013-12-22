@@ -100,7 +100,9 @@ boolean bval = false;
 // The message is saved in EEPROM as IncomingMessIndex, text[]
 int IncomingMessIndex = 0;
 char IncomingMessage[63];
-// The message is a pixel image of the text
+// 20 blank pixels at the start
+// 6 pixels per character
+// 20 blank pixels at the end
 int MessagePointer = 0;
 uint8_t Message[sizeof(IncomingMessage) * 6 + 20];
 char MessageRead;
