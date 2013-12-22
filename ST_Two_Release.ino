@@ -48,6 +48,8 @@
 #include <avr/power.h>
 #include <avr/wdt.h>
 
+#define DEBUG           1
+
 // STATE (main) states
 #define SETUP		0       // Set-Up
 #define SCROLLING_TEXT	1       // Serial Display
@@ -151,7 +153,7 @@ boolean PM_NotAM_flag = false;
 boolean NewTimeFormat = TH_Not24_flag;
 uint8_t AMPMALARMDOTS = 0;
 
-// Alarm
+// Alarm1
 uint8_t AHourTens = 1;
 uint8_t AHourOnes = 2;
 uint8_t AMinTens = 0;
@@ -178,6 +180,7 @@ int dayIndex = 0;
 boolean NextStateFlag = false;
 boolean SetTimeFlag = false;
 boolean ALARM1FLAG = false;
+boolean ALARM2FLAG = false;
 boolean ALARMON = false;
 
 boolean scrollDirFlag = false;
@@ -209,7 +212,11 @@ const int digitoffset = 95;
 #define		RTC_ALARM1SEC	B00000111   //; Seconds
 #define		RTC_ALARM1MIN	B00001000   //; Minutes
 #define		RTC_ALARM1HOUR	B00001001   //; Hours
-#define         RTC_ALARM1DATE  B00001010   //; Date
+#define         RTC_ALARM1DATE  B00001010   //; Day/Date
+
+#define		RTC_ALARM2MIN	B00001011   //; Minutes
+#define		RTC_ALARM2HOUR	B00001100   //; Hours
+#define         RTC_ALARM2DATE  B00001101   //; Day/Date
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Bit Map Letter - data array

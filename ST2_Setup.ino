@@ -57,9 +57,15 @@ void setup()
   delay(1500);
   clearmatrix();
 
+#ifdef TEST
   SetStartTime();               // Basic start time of 12:00 PM
   SetAlarmTime();               // for testing
   EnableAlarm1(false);          // for testing
+#endif
+
+  // Read the current time from the RTC
+  checktime();
+  SetWakeup();
 
   SleepTimer = millis();
 }

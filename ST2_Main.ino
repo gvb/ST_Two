@@ -15,15 +15,18 @@ void loop()
 
   bval = !digitalRead(MODEBUTTON);
   if (bval) {
-    if (ALARMON) {
-      CheckAlarm();
-    }
+    CheckAlarm();
 
     if (ALARM1FLAG) {
       ALARM1FLAG = false;
       ALARMON = false;
       EnableAlarm1(false);
       STATE = ALARM_TRIGGERED;
+      JustWokeUpFlag = false;
+    } else if (ALARM2FLAG) {
+      ALARM2FLAG = false;
+      SetWakeup();
+      STATE = SCROLLING_TEXT;
       JustWokeUpFlag = false;
     } else {
       if (JustWokeUpFlag) {

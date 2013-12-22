@@ -1220,3 +1220,41 @@ void writeTime(uint8_t dig1, uint8_t dig2, uint8_t dig3, uint8_t dig4)
 
   LEDMAT[0] = AMPMALARMDOTS;
 }
+
+//****************************************************************************
+// Set a wakup in 5 minutes
+//****************************************************************************
+void SetWakeup(void) {
+  uint8_t wakeupHourTens;
+  uint8_t wakeupHourOnes;
+  uint8_t wakeupMinTens;
+  uint8_t wakeupMinOnes;
+
+  // Read the current time from the RTC
+  checktime();
+
+  // ALARM2 is used for periodic wakeup
+  wakeupMinOnes = MinOnes;
+  wakeupMinTens = MinTens;
+  wakeupHourOnes = HourOnes;
+  wakeupHourTens = HourTens;
+  if (wakeupMinOnes < 5) {
+    wakeupMinOnes = 5;
+  } else {
+    wakeupMinOnes = 0;
+    wakeupMinTens++;
+    if (wakeupMinTens >= 6) {
+      wakeupMinTens = 0;
+      wakeupHourOnes++;
+      if (wakeupHourOnes >= 9) {
+        wakeupHourOnes = 0;
+        wakeupHourTens++;
+        if (wakeupHourTens >= 3)
+          wakeupHourTens = 0;
+      }
+    }
+  }
+
+  SetAlarm2Time(wakeupHourTens, wakeupHourOnes, wakeupMinTens, wakeupMinOnes);
+  EnableAlarm2(true);
+}

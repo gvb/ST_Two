@@ -211,19 +211,64 @@ void SetAlarmTime()             // Just for testing set to 12:01 PM
 }
 
 //****************************************************************************
+// SET Alarm2
+//****************************************************************************
+void SetAlarm2Time(int HourTens, int HourOnes, int MinTens, int MinOnes)
+{
+  uint8_t temp;
+
+  // Ignore the day/date.
+  temp = B10000000;
+  I2C_TX(RTCDS1337, RTC_ALARM2DATE, temp);
+
+  temp = (HourTens << 4) + HourOnes;
+  I2C_TX(RTCDS1337, RTC_ALARM2HOUR, temp);
+
+  temp = (MinTens << 4) + MinOnes;
+  I2C_TX(RTCDS1337, RTC_ALARM2MIN, temp);
+}
+
+//****************************************************************************
+// Enable Alarm2
+//****************************************************************************
+void EnableAlarm2(boolean onoff)  // Trigger on Hours & Minutes Match
+{
+  uint8_t temp = 0;
+
+  I2C_RX(RTCDS1337, RTCCONT);   // Enable Alarm Pin on RTC
+  temp = i2cData;
+  if (onoff) {
+    bitSet(temp, 1);
+    bitClear(temp, 2);      // Clear INTCN => toggle INTA* line
+  } else {
+    bitClear(temp, 1);
+  }
+  I2C_TX(RTCDS1337, RTCCONT, temp);
+
+  I2C_RX(RTCDS1337, RTCSTATUS); // Clear Alarm RTC internal Alarm Flag
+  temp = i2cData;
+  bitClear(temp, 1);
+  I2C_TX(RTCDS1337, RTCSTATUS, temp);
+}
+
+//****************************************************************************
 // Check Alarm
 //****************************************************************************
 void CheckAlarm()
 {
   uint8_t temp = 0;
+
   I2C_RX(RTCDS1337, RTCSTATUS);
   ALARM1FLAG = bitRead(i2cData, 0);
+  ALARM2FLAG = bitRead(i2cData, 1);
 
-  if (ALARM1FLAG) {
-    temp = i2cData;
+  temp = i2cData;
+  if (ALARM1FLAG)
     bitClear(temp, 0);
+  if (ALARM2FLAG)
+    bitClear(temp, 1);
+  if (ALARM1FLAG || ALARM2FLAG)
     I2C_TX(RTCDS1337, RTCSTATUS, temp);
-  }
 }
 
 //****************************************************************************
@@ -257,7 +302,6 @@ void EnableAlarm1(boolean onoff)  // Trigger on Hours & Minutes Match
 
   I2C_RX(RTCDS1337, RTCCONT);   // Enable Alarm Pin on RTC
   temp = i2cData;
-
   if (onoff) {
     bitSet(temp, 0);
   } else {
