@@ -617,6 +617,7 @@ shortloop:
       if (StartWindow == IncomingMax - 20) {
         ScrollLoops = ScrollLoops - 1;
         if (ScrollLoops <= 0) {
+          SetWakeup();  // Scheduled wakeup alarm
           STATE = SLEEP;
         }
       }
